@@ -1,0 +1,101 @@
+entity Image {
+	name String required
+    serviceType String required
+    os OS required
+    endDate ZonedDateTime required
+    file Blob
+}
+entity Accounte {
+    type AccountType required
+}
+
+entity AdminEdgeCloud {
+	name String required
+    url String required
+    type CloudType required
+    location String required
+    longitude Float required
+    latitude Float required
+    password String required
+}
+
+
+entity ProviderEdgeCloud {
+}
+
+entity Instance{
+	number Integer required
+	name String required
+	os OS required
+    type String
+    startTime ZonedDateTime required
+    endTime ZonedDateTime required
+    country String required
+    city String required
+    criteria Criteria required
+}
+
+
+entity User{
+
+}
+
+enum CloudType {
+    OPENSTACK, AWS, GOOGLE, RACKSPACE
+}
+enum Criteria {
+    COST, DELAY
+}
+enum OS {
+    UBUNTU, CENTOS, FEDORA, WINDOWS, MAC
+}
+enum AccountType {
+    ADMIN, PROVIDER
+}
+
+relationship OneToOne {
+	Accounte{user} to User
+}
+
+relationship OneToMany {
+	Image{instances} to Instance{images}
+}
+
+relationship OneToMany {
+	ProviderEdgeCloud{images} to Image{providerEdgeCloud}
+
+}
+relationship OneToMany {
+    AdminEdgeCloud{images} to Image{adminEdgeCloud}
+}
+relationship OneToMany {
+    AdminEdgeCloud{instances} to Instance{adminEdgeCloud}
+}
+
+relationship OneToMany {
+    ProviderEdgeCloud{instances} to Instance{providerEdgeCloud}
+}
+
+relationship OneToMany {
+	AdminEdgeCloud{providerEdgeClouds} to ProviderEdgeCloud{adminEdgeCloud}
+}
+
+relationship ManyToOne {
+	AdminEdgeCloud{account} to Accounte
+}
+
+relationship ManyToOne {
+	ProviderEdgeCloud{account} to Accounte
+}
+
+
+
+
+// Set pagination options
+paginate all with infinite-scroll
+
+
+// Set service options to all except few
+service all with serviceImpl 
+// Set an angular suffix
+angularSuffix * with eit
